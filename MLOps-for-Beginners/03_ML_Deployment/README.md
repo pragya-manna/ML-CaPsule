@@ -5,6 +5,9 @@
 Deployment means making your trained model available so that
 other people or systems can use it — not just you on your laptop.
 
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/a44a8233-dc18-4e88-b8a5-8f348b89f5ec" />
+
+
 ## Why APIs?
 
 An API (Application Programming Interface) lets any program
