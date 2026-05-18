@@ -68,11 +68,17 @@ def predict(request: PredictionRequest):
     
     try:
         # 1. Predict Close Price first based on High, Low, Open, Volume
-        input_close = np.array([[request.high, request.low, request.open_price, request.volume]])
+        input_close = pd.DataFrame(
+            [[request.high, request.low, request.open_price, request.volume]],
+            columns=['High', 'Low', 'Open', 'Volume']
+        )
         pred_close = float(close_model.predict(input_close)[0])
         
         # 2. Predict Marketcap based on High, Low, Open, Close, Volume
-        input_mc = np.array([[request.high, request.low, request.open_price, pred_close, request.volume]])
+        input_mc = pd.DataFrame(
+            [[request.high, request.low, request.open_price, pred_close, request.volume]],
+            columns=['High', 'Low', 'Open', 'Close', 'Volume']
+        )
         pred_mc = float(mc_model.predict(input_mc)[0])
         
         return PredictionResponse(
