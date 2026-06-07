@@ -7,7 +7,7 @@
 ---
 
 # Project Real Time Screen Recording
-![](./2026-06-07%2010-26-06.mp4)
+![](./2026-06-07%2010-26-06%20(1)%20(1)%20(1).mp4)
 
 # 📌 Project Description
 
