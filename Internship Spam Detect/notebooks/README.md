@@ -11,7 +11,6 @@ This project utilizes a subset of the **Internship Scam Detection Dataset** host
 
 * **Dataset Author / Credits:** Special thanks to **aiexplorer77** for compiling and sharing this valuable open-source security benchmark.
 * **Original Link:** https://www.kaggle.com/datasets/aiexplorer77/internship-scam-detection-dataset
-* **Note on Scope:** The data handled in this repository represents a balanced, optimized subset extracted from the larger master dataset to facilitate fast pipeline prototyping and hyperparameter tuning.
 
 ---
 

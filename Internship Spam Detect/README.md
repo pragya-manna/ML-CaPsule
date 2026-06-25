@@ -68,7 +68,19 @@ pip install -r requirements.txt
 
 ## Usage
 
-Once your environment is activated and dependencies are installed, start the Flask server:
+The dataset and model files are not included in this repository (excluded via .gitignore).
+
+**To set up:**
+1. Download the dataset from Kaggle: [Link](https://www.kaggle.com/datasets/aiexplorer77/internship-scam-detection-dataset)
+2. Place it in the `data/` folder as `internship_scam_data.csv`
+3. Run the notebook to generate model files:
+```bash
+   jupyter notebook notebooks/internship_scam_detection.ipynb
+```
+4. This will generate `model.pkl` and `pipeline.pkl` in the `models/` folder
+5. Then follow the Usage steps below
+
+Once your data and models are ready, start the Flask server:
 
 ```bash
 flask run
@@ -101,6 +113,15 @@ The final optimized model achieved the following results on the isolated test se
 * **Frontend:** HTML5, CSS3, Vanilla JavaScript (Fetch API)
 * **Backend:** Python, Flask, Flask-CORS
 * **Machine Learning:** scikit-learn, pandas, joblib
+
+---
+
+## Live Demo
+
+A fully deployed version of this project (including the trained model and dataset) is available on my personal repository:
+
+* **GitHub:** [spam-detect](https://github.com/naina-bhatnagar/spam-detect)
+* **Live App:** [Render link](https://spam-detect-saj2.onrender.com)
 
 ---
 
