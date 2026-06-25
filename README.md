@@ -80,20 +80,14 @@ To start setting up your environment for R-based data science models, follow the
    - Scroll down to the installer section and download the free version for your OS.
    - Install the executable/package file. RStudio will automatically detect your local R installation.
 
-#### Quick R Script Example
-Once installed, open RStudio and run this simple verification script in the console:
+#### 📚 Recommended Video Tutorials for Beginners
+To master R programming from basic to advanced levels, check out these comprehensive video resources:
 
-```r
-# Simple verification vector script
-message <- "Welcome to R Programming in ML-Capsule!"
-print(message)
+- 🎥 **[R Programming Full Course for Beginners (freeCodeCamp)](https://www.youtube.com/watch?v=_V8eKsto3Ug)** - A complete, hands-on masterclass covering vectors, data frames, and statistical operations.
+- 🎥 **[R Programming Tutorial - Learn the Basics (Edureka)](https://www.youtube.com/watch?v=KlsYv-ZSSb0)** - Excellent fundamental guide focusing on syntax, variables, and IDE setup.
+- 🎥 **[Data Science with R Full Course (Simplilearn)](https://www.youtube.com/watch?v=9kYUUFMsh88)** - Comprehensive track covering basic programming up to advanced data analysis and visualization.
+- 🎥 **[Introduction to R for Data Science (DataCamp)](https://www.youtube.com/watch?v=33W_VInE-zU)** - Quick interactive overview perfect for complete beginners looking to dive into analytics.
 
-# Basic vector addition example
-vector1 <- c(1, 2, 3)
-vector2 <- c(4, 5, 6)
-result <- vector1 + vector2
-print(result)
-```
 
 
 ## 🗂️ Topics Covered
