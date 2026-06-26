@@ -354,11 +354,12 @@ To submit your contributions, follow these steps:
 
 1. **Fork the Repository**: Click the "Fork" button at the top right corner of the repository to create your own copy.
 
-2. **Clone Your Fork**: Clone your forked repository to your local machine using the following command:
+2. **Clone Your Fork**: Clone your forked repository to your local machine and navigate into the directory:
     ```bash
-    git clone [https://github.com/Niketkumardheeryan/ML-CaPsule](https://github.com/Niketkumardheeryan/ML-CaPsule)
-
+    git clone https://github.com/Niketkumardheeryan/ML-CaPsule
+    cd ML-CaPsule
     git checkout -b my-feature
+    ```
     4. **Make Changes**: Make your desired changes to the codebase.
 
 5. **Commit Changes**: Commit your changes with a descriptive commit message:
