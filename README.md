@@ -34,7 +34,7 @@ Welcome to **ML-Capsule**!!! This repository is a comprehensive collection of ma
 - [📈 Why Machine Learning?](#-why-machine-learning)
 - [📚 Pre-requisites](#-pre-requisites)
 - [🗂️ Topics Covered](#️-topics-covered)
-- [📦 Dataset Resources](#dataset-resources) 
+- [📦 Dataset Resources](#-dataset-resources) 
 - [🗂️ Project Directory](#️-project-directory)
 - [📂 Project Descriptions](#-project-descriptions)
 - [📜 Summary](#-summary)
