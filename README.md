@@ -445,3 +445,32 @@ Happy Coding! 👩‍💻👨‍💻
 <img src = "https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge">
 
 <p align="right"><a href="#top"><img src="https://img.shields.io/badge/Move%20to%20top-Blue?style=plastic" alt="Back To Top"></a></p>
+
+## 🔍 Notebook Health Check Bot
+
+This repository uses an automated Notebook Health Check Bot to maintain code quality.
+
+### What it does:
+- ✅ Automatically tests all Jupyter notebooks on every Pull Request
+- 🔍 Detects missing imports and dependencies
+- ⏱️ Identifies notebooks with timeout issues
+- 🚨 Flags deprecated code patterns
+
+### Results:
+- 📊 Scans all notebooks in the repository
+- 📈 Provides detailed logs of notebook health status
+- 🎯 Helps maintainers identify broken notebooks quickly
+
+### Recent Run:
+- Found 16 notebooks
+- ✅ 15 notebooks passed the health check
+- ⏱️ 1 notebook flagged for timeout (AutoML_GSSoC.ipynb)
+- All issues were successfully detected and reported
+
+
+
+
+
+
+
+
