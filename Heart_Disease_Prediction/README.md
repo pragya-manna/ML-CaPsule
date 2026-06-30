@@ -59,6 +59,3 @@ Predict whether a patient has heart disease using machine learning classificatio
 
 ## 👤 Author
 **Akshata J** — GSSoC 2026 Contributor
-
-## 🔗 Issue Reference
-Closes #1446
