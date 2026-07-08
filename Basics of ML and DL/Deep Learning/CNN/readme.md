@@ -72,3 +72,5 @@ After completing this notebook, you will be able to:
 - TensorFlow/Keras Documentation
 - CIFAR-10 Dataset
 - Deep Learning by Ian Goodfellow, Yoshua Bengio, and Aaron Courville
+
+Note: If automatic download fails due to network restrictions, manually download the CIFAR-10 dataset from the official source or place it in the ./data directory before running the notebook.
