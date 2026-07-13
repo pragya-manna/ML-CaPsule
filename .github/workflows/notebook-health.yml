@@ -59,26 +59,20 @@ jobs:
           CHANGED_FILES: ${{ steps.changed-files.outputs.changed_files }}
         run: python .github/scripts/notebook_health_check.py
         
-      - name: Add Comment to PR
-        if: github.event_name == 'pull_request'
+      - name: Show Warning on PR
+        if: always() # Run even if the python script throws an error
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
           REPORT_BODY: ${{ steps.health_check.outputs.report }}
         run: |
           if [ -n "$REPORT_BODY" ]; then
-            echo "Creating JSON payload safely with jq..."
-            # jq safely escapes newlines and special characters for the JSON payload
-            jq -n --arg body "$REPORT_BODY" '{body: $body}' > payload.json
+            # Multiline strings in annotations must use %0A for newlines
+            ESCAPED_REPORT="${REPORT_BODY//$'\n'/%0A}"
             
-            echo "Posting comment to PR #$PR_NUMBER..."
-            curl -s -S -X POST \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -H "Content-Type: application/json" \
-              -d @payload.json \
-              "https://api.github.com/repos/$REPO/issues/$PR_NUMBER/comments"
+            # This creates a yellow warning box on the PR summary page
+            echo "::warning title=Notebook Health Check Summary::$ESCAPED_REPORT"
+            
+            # Also write it to the Job Summary page for better formatting
+            echo "$REPORT_BODY" >> $GITHUB_STEP_SUMMARY
           else
-            echo "No report body found in GITHUB_OUTPUT."
+            echo "::warning title=Notebook Health Check::No notebooks were found or checked."
           fi
