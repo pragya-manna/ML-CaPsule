@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import sys
+import uuid
 from pathlib import Path
 
 
@@ -50,16 +51,19 @@ def find_notebooks(root_dir=".", changed_files=None):
     if changed_files is None:
         changed_files = []
 
-    """Find notebooks in changed files or in common locations within the repository."""
     notebooks = []
     root_path = Path(root_dir).resolve()
 
     changed_file_entries = normalize_changed_files(changed_files)
     env_changed_files = os.getenv("CHANGED_FILES", "")
-    if env_changed_files:
+    
+    # Check if the bash script passed the fallback message instead of real files
+    is_fallback = "No changed files detected" in env_changed_files
+    
+    if env_changed_files and not is_fallback:
         changed_file_entries.extend(normalize_changed_files([env_changed_files]))
 
-    if changed_file_entries:
+    if changed_file_entries and not is_fallback:
         for entry in changed_file_entries:
             candidate = Path(entry)
             if not candidate.is_absolute():
@@ -72,6 +76,12 @@ def find_notebooks(root_dir=".", changed_files=None):
         print("No changed notebook files matched the health check criteria.")
         return []
 
+    # If we get here, no specific changed files were found, so do a full scan
+    print("Performing full notebook scan...")
+    for candidate in root_path.rglob("*.ipynb"):
+        if ".ipynb_checkpoints" not in str(candidate):
+            notebooks.append(candidate)
+            
     return sorted(dict.fromkeys(notebooks))
 
 
@@ -199,71 +209,65 @@ def test_notebook(notebook_path):
     return result
 
 
-import os
-import uuid
-
 def run_health_check(root_dir=".", changed_files=None):
     """Run the notebook health checks and report failed notebooks as warnings."""
     notebooks = find_notebooks(root_dir, changed_files)
-    if changed_files or os.getenv("CHANGED_FILES"):
-        print(f"Checking {len(notebooks)} changed notebook(s).")
-    else:
-        print(f"Found {len(notebooks)} notebooks")
-
+    
+    results = []
+    failed = []
+    skipped = []
+    report_lines = ["### 📝 Notebook Health Check Results"]
+    
     if not notebooks:
         print("No notebooks found to test.")
-        return []
-
-    results = []
-    for nb in notebooks:
-        print(f"Testing: {nb}")
-        result = test_notebook(nb)
-        results.append(result)
-
-    failed = [r for r in results if not r["success"] and not r.get("skipped")]
-    skipped = [r for r in results if r.get("skipped")]
-
-    if failed:
-        print(f"\n⚠️ {len(failed)} notebooks reported warnings:")
-        for fail in failed:
-            message = f"Notebook execution issue: {fail['path']}: {fail['error']}"
-            emit_warning(message)
-            print(f"  - {fail['path']}: {fail['error']}")
-
-    if skipped:
-        print(f"\nℹ️ {len(skipped)} notebooks were flagged for manual inspection and skipped:")
-        for item in skipped:
-            print(f"  - {item['path']}: {item['reason']}")
+        report_lines.append("\n**No notebooks were found or changed.** No tests were run. 🎉")
     else:
-        if results:
-            print(f"\n✅ All {len(results)} notebooks passed!")
+        print(f"Found {len(notebooks)} notebooks to test.")
+        for nb in notebooks:
+            print(f"Testing: {nb}")
+            result = test_notebook(nb)
+            results.append(result)
 
-    # --- Build the Markdown Report in memory ---
-    report_lines = [
-        "### 📝 Notebook Health Check Results",
-        f"**Total notebooks checked:** {len(results)}\n"
-    ]
-    
-    report_lines.append(f"#### Failed Notebooks ({len(failed)})")
-    if failed:
-        for fail in failed:
-            report_lines.append(f"- **{fail['path']}**: {fail['error']}")
-    else:
-        report_lines.append("None! 🎉")
+        failed = [r for r in results if not r["success"] and not r.get("skipped")]
+        skipped = [r for r in results if r.get("skipped")]
+
+        if failed:
+            print(f"\n⚠️ {len(failed)} notebooks reported warnings:")
+            for fail in failed:
+                message = f"Notebook execution issue: {fail['path']}: {fail['error']}"
+                emit_warning(message)
+                print(f"  - {fail['path']}: {fail['error']}")
+
+        if skipped:
+            print(f"\nℹ️ {len(skipped)} notebooks were flagged for manual inspection and skipped:")
+            for item in skipped:
+                print(f"  - {item['path']}: {item['reason']}")
+        else:
+            if results and not failed:
+                print(f"\n✅ All {len(results)} notebooks passed!")
+
+        # Build the Markdown Report content
+        report_lines.append(f"\n**Total notebooks checked:** {len(results)}\n")
         
-    report_lines.append(f"\n#### Skipped Notebooks ({len(skipped)})")
-    if skipped:
-        for skip in skipped:
-            report_lines.append(f"- **{skip['path']}**: {skip['reason']}")
-    else:
-        report_lines.append("None")
+        report_lines.append(f"#### Failed Notebooks ({len(failed)})")
+        if failed:
+            for fail in failed:
+                report_lines.append(f"- **{fail['path']}**: {fail['error']}")
+        else:
+            report_lines.append("None! 🎉")
+            
+        report_lines.append(f"\n#### Skipped Notebooks ({len(skipped)})")
+        if skipped:
+            for skip in skipped:
+                report_lines.append(f"- **{skip['path']}**: {skip['reason']}")
+        else:
+            report_lines.append("None")
 
     report_string = "\n".join(report_lines)
 
     # --- Write to GITHUB_OUTPUT ---
     github_output = os.environ.get('GITHUB_OUTPUT')
     if github_output:
-        # We use 'outfile' instead of 'f' to avoid confusion
         with open(github_output, 'a', encoding="utf-8") as outfile:
             delimiter = str(uuid.uuid4())
             outfile.write(f"report<<{delimiter}\n")
@@ -285,4 +289,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
-    
