@@ -137,6 +137,7 @@ def load_notebook_payload(notebook_path):
         with open(notebook_path, "r", encoding="utf-8") as handle:
             return json.loads(handle.read())
     except Exception as exc:
+        print(f"Error reading {notebook_path}: {exc}")
         return None
 
 
@@ -198,6 +199,9 @@ def test_notebook(notebook_path):
     return result
 
 
+import os
+import uuid
+
 def run_health_check(root_dir=".", changed_files=None):
     """Run the notebook health checks and report failed notebooks as warnings."""
     notebooks = find_notebooks(root_dir, changed_files)
@@ -221,27 +225,54 @@ def run_health_check(root_dir=".", changed_files=None):
 
     if failed:
         print(f"\n⚠️ {len(failed)} notebooks reported warnings:")
-        for f in failed:
-            message = f"Notebook execution issue: {f['path']}: {f['error']}"
+        for fail in failed:
+            message = f"Notebook execution issue: {fail['path']}: {fail['error']}"
             emit_warning(message)
-            print(f"  - {f['path']}: {f['error']}")
+            print(f"  - {fail['path']}: {fail['error']}")
 
     if skipped:
         print(f"\nℹ️ {len(skipped)} notebooks were flagged for manual inspection and skipped:")
         for item in skipped:
             print(f"  - {item['path']}: {item['reason']}")
     else:
-        print(f"\n✅ All {len(results)} notebooks passed!")
+        if results:
+            print(f"\n✅ All {len(results)} notebooks passed!")
 
-    with open("result.md", "w", encoding="utf-8") as f:
-        f.write(f"# Notebook Health Check Results\n\n")
-        f.write(f"Total notebooks checked: {len(results)}\n\n")
-        f.write(f"## Failed Notebooks ({len(failed)})\n")
-        for f in failed:
-            f.write(f"- **{f['path']}**: {f['error']}\n")
-        f.write(f"\n## Skipped Notebooks ({len(skipped)})\n")
-        for s in skipped:
-            f.write(f"- **{s['path']}**: {s['reason']}\n")
+    # --- Build the Markdown Report in memory ---
+    report_lines = [
+        "### 📝 Notebook Health Check Results",
+        f"**Total notebooks checked:** {len(results)}\n"
+    ]
+    
+    report_lines.append(f"#### Failed Notebooks ({len(failed)})")
+    if failed:
+        for fail in failed:
+            report_lines.append(f"- **{fail['path']}**: {fail['error']}")
+    else:
+        report_lines.append("None! 🎉")
+        
+    report_lines.append(f"\n#### Skipped Notebooks ({len(skipped)})")
+    if skipped:
+        for skip in skipped:
+            report_lines.append(f"- **{skip['path']}**: {skip['reason']}")
+    else:
+        report_lines.append("None")
+
+    report_string = "\n".join(report_lines)
+
+    # --- Write to GITHUB_OUTPUT ---
+    github_output = os.environ.get('GITHUB_OUTPUT')
+    if github_output:
+        # We use 'outfile' instead of 'f' to avoid confusion
+        with open(github_output, 'a', encoding="utf-8") as outfile:
+            delimiter = str(uuid.uuid4())
+            outfile.write(f"report<<{delimiter}\n")
+            outfile.write(f"{report_string}\n")
+            outfile.write(f"{delimiter}\n")
+    else:
+        # Fallback for running locally
+        print("\n--- Markdown Report ---")
+        print(report_string)
 
     return results
 
