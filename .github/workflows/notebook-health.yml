@@ -33,7 +33,7 @@ jobs:
       - name: Get changed files
         id: changed-files
         shell: bash
-        run: |
+        run: | # fetches newly added or changed files
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             git fetch origin "${{ github.base_ref }}" --depth=1 || true

@@ -218,7 +218,7 @@ def run_health_check(root_dir=".", changed_files=None):
     skipped = []
     report_lines = ["### 📝 Notebook Health Check Results"]
     
-    if not notebooks:
+    if not notebooks: # if no notebooks are found just print a message and add to the report
         print("No notebooks found to test.")
         report_lines.append("\n**No notebooks were found or changed.** No tests were run. 🎉")
     else:
