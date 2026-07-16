@@ -6,7 +6,7 @@ This system processes live webcam feeds through a specialized background process
 
 ---
 
-## ✨ Features
+## ✨ Features 
 
 - **Multi-Threaded Video Streaming:** High-efficiency web camera stream powered by `streamlit-webrtc`.
 - **Precision Landmark Tracking:** Extracts 21 precise 3D hand coordinates using Google MediaPipe.
