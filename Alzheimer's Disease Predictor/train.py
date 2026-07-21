@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Conv2D, MaxPooling2D, Dropout
 from tensorflow.keras.optimizers import Adam
 
 
@@ -56,7 +56,7 @@ def build_model():
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Conv2D(50, kernel_size=(3, 3), padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Flatten())
+    model.add(GlobalAveragePooling2D())
     model.add(Dense(500, activation='relu'))
     model.add(Dropout(0.25))
     model.add(Dense(250, activation='relu'))
